@@ -1,13 +1,13 @@
-import logo from './logo.svg';
-import './App.css';
-import React from 'react';
-import Plyr from 'plyr'
+import logo from "./logo.svg";
+import "./App.css";
+import React from "react";
+import Plyr from "plyr";
 class Main extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      ws: null
-    }
+      ws: null,
+    };
   }
 
   componentDidMount() {
@@ -16,36 +16,36 @@ class Main extends React.Component {
 
   timeout = 250;
 
-
   connect = () => {
     var ws = new WebSocket("ws://stream.gud.software:8080/websocket");
     let that = this;
     var connectInterval;
 
     ws.onopen = () => {
-      console.log("Connected to websocket")
+      console.log("Connected to websocket");
 
-      this.setState({ ws: ws })
+      this.setState({ ws: ws });
 
       that.timeout = 250;
 
-      clearTimeout(connectInterval)
+      clearTimeout(connectInterval);
     };
 
-    ws.onclose = e => {
-      console.log(`Socket is closed. Reconnect will be attempted in ${Math.min(
-        10000 / 1000,
-        (that.timeout + that.timeout) / 1000
-      )} second.`,
-        e.reason);
+    ws.onclose = (e) => {
+      console.log(
+        `Socket is closed. Reconnect will be attempted in ${Math.min(
+          10000 / 1000,
+          (that.timeout + that.timeout) / 1000
+        )} second.`,
+        e.reason
+      );
 
       that.timeout = that.timeout + that.timeout;
       connectInterval = setTimeout(this.check, Math.min(10000, that.timeout));
-
     };
 
     // websocket onerror event listener
-    ws.onerror = err => {
+    ws.onerror = (err) => {
       console.error(
         "Socket encountered error: ",
         err.message,
@@ -62,25 +62,25 @@ class Main extends React.Component {
   };
 
   render() {
-    return <App websocket={this.state.ws}></App>
+    return <App websocket={this.state.ws}></App>;
   }
 }
 
 function App(props) {
-  
-  let pc = new RTCPeerConnection()
-  let log = msg => {
-    document.getElementById('div').innerHTML += msg + '<br>'
-  }
+  let pc = new RTCPeerConnection();
+  let log = (msg) => {
+    document.getElementById("div").innerHTML += msg + "<br>";
+  };
 
   pc.ontrack = function (event) {
-    var el = document.getElementById('player');
-    el.srcObject = event.streams[0]
-    el.autoplay = true
-    el.controls = true
-
-
-  }
+    if (event.track.kind === "audio") {
+      return;
+    }
+    var el = document.getElementById("player");
+    el.srcObject = event.streams[0];
+    el.autoplay = true;
+    el.controls = true;
+  };
 
   // pc.oniceconnectionstatechange = e => log(pc.iceConnectionState)
   // pc.onicecandidate = event => {
@@ -91,57 +91,56 @@ function App(props) {
   // }
 
   // Offer to receive 1 audio, and 1 video tracks
-  pc.addTransceiver('audio', { 'direction': 'recvonly' })
+  pc.addTransceiver("audio", { direction: "recvonly" });
   // pc.addTransceiver('video', { 'direction': 'recvonly' })
-  pc.addTransceiver('video', { 'direction': 'recvonly' })
-
-
+  pc.addTransceiver("video", { direction: "recvonly" });
 
   let ws = props.websocket;
-  pc.onicecandidate = e => {
+  pc.onicecandidate = (e) => {
     if (!e.candidate) {
-      console.log("Candidate fail")
-      return
+      console.log("Candidate fail");
+      return;
     }
 
-    ws.send(JSON.stringify({ event: 'candidate', data: JSON.stringify(e.candidate) }))
-  }
-
+    ws.send(
+      JSON.stringify({ event: "candidate", data: JSON.stringify(e.candidate) })
+    );
+  };
 
   if (ws) {
     ws.onmessage = function (evt) {
-      let msg = JSON.parse(evt.data)
+      let msg = JSON.parse(evt.data);
       if (!msg) {
-        return console.log('failed to parse msg')
+        return console.log("failed to parse msg");
       }
 
       switch (msg.event) {
-        case 'offer':
-          console.log("offer")
-          let offer = JSON.parse(msg.data)
+        case "offer":
+          console.log("offer");
+          let offer = JSON.parse(msg.data);
           if (!offer) {
-            return console.log('failed to parse answer')
+            return console.log("failed to parse answer");
           }
-          pc.setRemoteDescription(offer)
-          pc.createAnswer().then(answer => {
-            pc.setLocalDescription(answer)
-            ws.send(JSON.stringify({ event: 'answer', data: JSON.stringify(answer) }))
-          })
-          return
+          pc.setRemoteDescription(offer);
+          pc.createAnswer().then((answer) => {
+            pc.setLocalDescription(answer);
+            ws.send(
+              JSON.stringify({ event: "answer", data: JSON.stringify(answer) })
+            );
+          });
+          return;
 
-        case 'candidate':
-          console.log("candidate")
-          let candidate = JSON.parse(msg.data)
+        case "candidate":
+          console.log("candidate");
+          let candidate = JSON.parse(msg.data);
           if (!candidate) {
-            return console.log('failed to parse candidate')
+            return console.log("failed to parse candidate");
           }
 
-          pc.addIceCandidate(candidate)
+          pc.addIceCandidate(candidate);
       }
-    }
+    };
   }
-
-
 
   // let sd = document.getElementById('remoteSessionDescription').value
   // if (sd === '') {
@@ -152,10 +151,7 @@ function App(props) {
   //     pc.setRemoteDescription(new RTCSessionDescription(JSON.parse(atob(sd))))
   // } catch (e) {
   //     alert(e)
-  // 
-
-
-
+  //
 
   return (
     <div className="App">
@@ -164,28 +160,34 @@ function App(props) {
           <img id="logo-img" src="/images/lightspeedlogo.svg"></img>
           <h1>Project Lightspeed</h1>
         </div>
-        <div>
-
-        </div>
-
+        <div></div>
       </header>
       <div className="container">
         <div className="video-container">
-          <video id="player" playsInline controls poster="/images/img.jpg">
-          </video>
+          <video
+            id="player"
+            playsInline
+            controls
+            poster="/images/img.jpg"
+          ></video>
           <div className="video-details">
             <div className="detail-heading-box">
               <div className="detail-title">
-                <span className="alpha-tag"><div> <i class="fas fa-construction badge-icon"></i>Alpha</div></span>
-                <h4 className="details-heading">Welcome to Project Lightspeed - The future of live entertainment</h4>
-
+                <span className="alpha-tag">
+                  <div>
+                    {" "}
+                    <i class="fas fa-construction badge-icon"></i>Alpha
+                  </div>
+                </span>
+                <h4 className="details-heading">
+                  Welcome to Project Lightspeed - The future of live
+                  entertainment
+                </h4>
               </div>
 
               <img id="detail-img" src="/images/lightspeedlogo.svg"></img>
             </div>
-
           </div>
-
         </div>
 
         <div className="chat-container">
@@ -199,14 +201,9 @@ function App(props) {
               <i class="fas fa-construction"></i>
               <h4>Coming Soon!</h4>
             </div>
-
           </div>
-
         </div>
-
       </div>
-
-
     </div>
   );
 }
