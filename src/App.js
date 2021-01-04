@@ -10,6 +10,7 @@ class Main extends React.Component {
       isLoaded: false,
       error: null,
 
+      wsUrl: null,
       ws: null,
     };
   }
@@ -19,13 +20,17 @@ class Main extends React.Component {
       .then(res => res.json())
       .then(
         (result) => {
-          if (result.hasOwnProperty("wsUrl"))
-            this.connect(result.wsUrl);
-          else
+          if (result.hasOwnProperty("wsUrl")) {
+            this.setState({
+              wsUrl: result.wsUrl
+            });
+            this.connect();
+          } else {
             this.setState({
               isLoaded: true,
               error: "config.json is invalid"
             })
+          }
         },
         (error) => {
           this.setState({
@@ -37,8 +42,9 @@ class Main extends React.Component {
 
   timeout = 250;
 
-  connect = (url) => {
-    var ws = new WebSocket(url);
+  connect = () => {
+    const {wsUrl} = this.state;
+    var ws = new WebSocket(wsUrl);
     let that = this;
     var connectInterval;
 
