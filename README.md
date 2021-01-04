@@ -1,70 +1,151 @@
-# Getting Started with Create React App
+<p align="center">
+<a  href="https://github.com/GRVYDEV/Lightspeed-react">
+    <img src="images/lightspeedlogo.svg" alt="Logo" width="150" height="150">
+</a>
+</p>
+  <h1 align="center">Project Lightspeed React</h1>
+<div align="center">
+  <a href="https://github.com/GRVYDEV/Lightspeed-react/stargazers"><img src="https://img.shields.io/github/stars/GRVYDEV/Lightspeed-react" alt="Stars Badge"/></a>
+<a href="https://github.com/GRVYDEV/Lightspeed-react/network/members"><img src="https://img.shields.io/github/forks/GRVYDEV/Lightspeed-react" alt="Forks Badge"/></a>
+<a href="https://github.com/GRVYDEV/Lightspeed-react/pulls"><img src="https://img.shields.io/github/issues-pr/GRVYDEV/Lightspeed-react" alt="Pull Requests Badge"/></a>
+<a href="https://github.com/GRVYDEV/Lightspeed-react/issues"><img src="https://img.shields.io/github/issues/GRVYDEV/Lightspeed-react" alt="Issues Badge"/></a>
+<a href="https://github.com/GRVYDEV/Lightspeed-react/graphs/contributors"><img alt="GitHub contributors" src="https://img.shields.io/github/contributors/GRVYDEV/Lightspeed-react?color=2b9348"></a>
+<a href="https://github.com/GRVYDEV/Lightspeed-react/blob/master/LICENSE"><img src="https://img.shields.io/github/license/GRVYDEV/Lightspeed-react?color=2b9348" alt="License Badge"/></a>
+</div>
+<br />
+<p align="center">
+  <p align="center">
+    A React website that connects to Lightspeed WebRTC via a websocket to negotiate SDPs and display a WebRTC stream.
+    <!-- <br /> -->
+    <!-- <a href="https://github.com/GRVYDEV/Lightspeed-react"><strong>Explore the docs »</strong></a> -->
+    <br />
+    <br />
+    <a href="https://github.com/GRVYDEV/Lightspeed-react">View Demo</a>
+    ·
+    <a href="https://github.com/GRVYDEV/Lightspeed-react/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/GRVYDEV/Lightspeed-react/issues">Request Feature</a>
+  </p>
+</p>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<!-- TABLE OF CONTENTS -->
+<details open="open">
+  <summary><h2 style="display: inline-block">Table of Contents</h2></summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+      <ul>
+        <li><a href="#built-with">Built With</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#acknowledgements">Acknowledgements</a></li>
+  </ol>
+</details>
 
-## Available Scripts
+<!-- ABOUT THE PROJECT -->
 
-In the project directory, you can run:
+## About The Project
 
-### `npm start`
+<!-- [![Product Name Screen Shot][product-screenshot]](https://example.com) -->
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+This is one of three components required for Project Lightspeed. Project Lightspeed is a fully self contained live streaming server. With this you will be able to deploy your own sub-second latency live streaming platform. This particular repository connects via websocket to Lightspeed WebRTC and displays a WebRTC stream. In order for this to work the Project Lightspeed WebRTC and Project Lightspeed Ingest are required. 
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### Built With
 
-### `npm test`
+- React
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Dependencies
 
-### `npm run build`
+- [Lightspeed WebRTC](https://github.com/GRVYDEV/Lightspeed-webrtc)
+- [Lightspeed Ingest](https://github.com/GRVYDEV/Lightspeed-ingest)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+<!-- GETTING STARTED -->
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Getting Started
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+To get a local copy up and running follow these simple steps.
 
-### `npm run eject`
+### Prerequisites
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+In order to run this npm is required. Installation instructions can be found <a href="https://www.rust-lang.org/tools/https://www.npmjs.com/get-npm">here</a>. Npm Serve is required as well if you want to host this on your machine. That can be found <a href="https://www.npmjs.com/package/serve">here</a>
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Installation
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```sh
+git clone https://github.com/GRVYDEV/Lightspeed-react.git
+cd Lightspeed-react
+npm install
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+<!-- USAGE EXAMPLES -->
 
-## Learn More
+## Usage
+First you need to configure the websocket url in `src/wsUrl.js`. If you are using an IP then it will be the public IP of your machine if you have DNS then it will be your hostname.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+You can host the static site locally using `serve`
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```sh
+cd Lightspeed-react
+npm build
+serve -s build -l 80
+```
 
-### Code Splitting
+This will serve the build folder on port 80 of your machine meaning it can be retrevied via a browser by either going to your machines public IP or hostname
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+<!-- _For more examples, please refer to the [Documentation](https://example.com)_ -->
 
-### Analyzing the Bundle Size
+<!-- ROADMAP -->
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Roadmap
 
-### Making a Progressive Web App
+See the [open issues](https://github.com/GRVYDEV/Lightspeed-react/issues) for a list of proposed features (and known issues).
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+<!-- CONTRIBUTING -->
 
-### Advanced Configuration
+## Contributing
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
-### Deployment
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+<!-- LICENSE -->
 
-### `npm run build` fails to minify
+## License
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Distributed under the MIT License. See `LICENSE` for more information.
+
+<!-- CONTACT -->
+
+## Contact
+
+Garrett Graves - [@grvydev](https://twitter.com/grvydev)
+
+Project Link: [https://github.com/GRVYDEV/Lightspeed-react](https://github.com/GRVYDEV/Lightspeed-react)
+
+<!-- ACKNOWLEDGEMENTS -->
+
+## Acknowledgements
+
+- [Sean Dubois](https://github.com/Sean-Der)
+
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
+

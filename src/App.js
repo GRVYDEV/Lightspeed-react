@@ -2,6 +2,7 @@ import logo from "./logo.svg";
 import "./App.css";
 import React from "react";
 import Plyr from "plyr";
+import url from "./wsUrl"
 class Main extends React.Component {
   constructor(props) {
     super(props);
@@ -17,7 +18,7 @@ class Main extends React.Component {
   timeout = 250;
 
   connect = () => {
-    var ws = new WebSocket("ws://stream.gud.software:8080/websocket");
+    var ws = new WebSocket(url);
     let that = this;
     var connectInterval;
 
