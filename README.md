@@ -98,7 +98,7 @@ You can host the static site locally using `serve`
 
 ```sh
 cd Lightspeed-react
-npm build
+npm run build
 serve -s build -l 80
 ```
 
