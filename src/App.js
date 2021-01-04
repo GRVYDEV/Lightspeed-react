@@ -2,7 +2,7 @@ import logo from "./logo.svg";
 import "./App.css";
 import React from "react";
 import Plyr from "plyr";
-import url from "./wsUrl"
+import {url} from "./wsUrl"
 class Main extends React.Component {
   constructor(props) {
     super(props);
