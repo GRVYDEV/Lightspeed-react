@@ -2,22 +2,39 @@ import logo from "./logo.svg";
 import "./App.css";
 import React from "react";
 import Plyr from "plyr";
-import {url} from "./wsUrl"
+
 class Main extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      isLoaded: false,
+      error: null,
+
       ws: null,
     };
   }
 
   componentDidMount() {
-    this.connect();
+    fetch("config.json")
+      .then(res => res.json())
+      .then(
+        (result) => {
+          if (result.hasOwnProperty("wsUrl"))
+            this.connect(result.wsUrl);
+          else
+            console.error("config.json is invalid")
+        },
+        (error) => {
+          this.setState({
+            isLoaded: true,
+            error
+          });
+        });
   }
 
   timeout = 250;
 
-  connect = () => {
+  connect = (url) => {
     var ws = new WebSocket(url);
     let that = this;
     var connectInterval;
@@ -25,7 +42,7 @@ class Main extends React.Component {
     ws.onopen = () => {
       console.log("Connected to websocket");
 
-      this.setState({ ws: ws });
+      this.setState({ws: ws});
 
       that.timeout = 250;
 
@@ -58,8 +75,8 @@ class Main extends React.Component {
   };
 
   check = () => {
-    const { ws } = this.state;
-    if (!ws || ws.readyState == WebSocket.CLOSED) this.connect(); //check if websocket instance is closed, if so call `connect` function.
+    const {ws, isLoaded} = this.state;
+    if (isLoaded && (!ws || ws.readyState == WebSocket.CLOSED)) this.connect(); //check if websocket instance is closed, if so call `connect` function.
   };
 
   render() {
@@ -92,9 +109,9 @@ function App(props) {
   // }
 
   // Offer to receive 1 audio, and 1 video tracks
-  pc.addTransceiver("audio", { direction: "recvonly" });
+  pc.addTransceiver("audio", {direction: "recvonly"});
   // pc.addTransceiver('video', { 'direction': 'recvonly' })
-  pc.addTransceiver("video", { direction: "recvonly" });
+  pc.addTransceiver("video", {direction: "recvonly"});
 
   let ws = props.websocket;
   pc.onicecandidate = (e) => {
@@ -104,7 +121,7 @@ function App(props) {
     }
 
     ws.send(
-      JSON.stringify({ event: "candidate", data: JSON.stringify(e.candidate) })
+      JSON.stringify({event: "candidate", data: JSON.stringify(e.candidate)})
     );
   };
 
@@ -126,7 +143,7 @@ function App(props) {
           pc.createAnswer().then((answer) => {
             pc.setLocalDescription(answer);
             ws.send(
-              JSON.stringify({ event: "answer", data: JSON.stringify(answer) })
+              JSON.stringify({event: "answer", data: JSON.stringify(answer)})
             );
           });
           return;
