@@ -89,8 +89,13 @@ class Main extends React.Component {
   };
 
   render() {
-    // TODO: check isLoaded and error in state and show error if needed?
-    return <App websocket={this.state.ws}></App>;
+    const {error} = this.state;
+    if (!error)
+      return <App websocket={this.state.ws}></App>;
+    else {
+      console.error(error)
+      return null;
+    }
   }
 }
 
