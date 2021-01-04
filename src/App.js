@@ -22,7 +22,10 @@ class Main extends React.Component {
           if (result.hasOwnProperty("wsUrl"))
             this.connect(result.wsUrl);
           else
-            console.error("config.json is invalid")
+            this.setState({
+              isLoaded: true,
+              error: "config.json is invalid"
+            })
         },
         (error) => {
           this.setState({
@@ -75,11 +78,12 @@ class Main extends React.Component {
   };
 
   check = () => {
-    const {ws, isLoaded} = this.state;
-    if (isLoaded && (!ws || ws.readyState == WebSocket.CLOSED)) this.connect(); //check if websocket instance is closed, if so call `connect` function.
+    const {ws} = this.state;
+    if (!ws || ws.readyState == WebSocket.CLOSED) this.connect(); //check if websocket instance is closed, if so call `connect` function.
   };
 
   render() {
+    // TODO: check isLoaded and error in state and show error if needed?
     return <App websocket={this.state.ws}></App>;
   }
 }
