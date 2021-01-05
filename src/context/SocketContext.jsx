@@ -1,53 +1,89 @@
-import React, { createContext, useContext, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useReducer,
+  useState,
+} from "react";
 import { url } from "../assets/constants";
 import PropTypes from "prop-types";
 
 export const SocketContext = createContext();
 
-const webSocket = new WebSocket(url);
+const socketReducer = (state, action) => {
+  switch (action.type) {
+    case "renewSocket": {
+      let timeout = state.wsTimeoutDuration * 2;
+      if (timeout > 10000) {
+        timeout = 10000;
+      }
+      console.log("creating websocket");
+      return {
+        ...state,
+        socket: new WebSocket(url),
+        wsTimeoutDuration: timeout,
+      };
+    }
+    case "updateInterval": {
+      return { ...state, connectInterval: action.interval };
+    }
+    case "clearInterval": {
+      clearInterval(state.connectInterval);
+      return { ...state };
+    }
+    case "resetTimeoutDuration": {
+      return { ...state, wsTimeoutDuration: 250 };
+    }
+    default: {
+      return { ...state };
+    }
+  }
+};
+
+const initialState = {
+  socket: new WebSocket(url),
+  wsTimeoutDuration: 250,
+  connectInterval: null,
+};
 
 const SocketProvider = ({ children }) => {
-  const [socket] = useState(webSocket);
-  const [wsTimeout, setWsTimeout] = useState(250);
-  const [connectInterval, setConnectInterval] = useState(null);
+  const [state, dispatch] = useReducer(socketReducer, initialState);
 
-  const check = () => {
-    if (!socket || socket.readyState === WebSocket.CLOSED) {
-      console.log(socket);
-      //socket.connect();
-    } //check if websocket instance is closed, if so call `connect` function.
-  };
+  const { socket, wsTimeoutDuration } = state;
 
-  socket.onopen = () => {
-    console.log("Connected to websocket");
+  useEffect(() => {
+    socket.onopen = () => {
+      dispatch({ type: "resetTimeoutDuration" });
+      console.log("Connected to websocket");
+    };
 
-    setWsTimeout(250);
+    socket.onclose = (e) => {
+      const { reason } = e;
+      console.log(
+        `Socket is closed. Reconnect will be attempted in ${Math.min(
+          wsTimeoutDuration / 1000
+        )} second. ${reason}`
+      );
 
-    clearTimeout(connectInterval);
-  };
+      const interval = setTimeout(() => {
+        //check if websocket instance is closed, if so call `setupConnect` function.
+        if (!socket || socket.readyState === WebSocket.CLOSED) {
+          dispatch({ type: "renewSocket" });
+        }
+      }, wsTimeoutDuration);
 
-  socket.onclose = (e) => {
-    console.log(
-      `Socket is closed. Reconnect will be attempted in ${Math.min(
-        10,
-        (2 * wsTimeout) / 1000
-      )} second.`,
-      e.reason
-    );
+      dispatch({ type: "updateInterval", interval });
+    };
 
-    setWsTimeout(2 * wsTimeout);
-    const interval = setTimeout(check, Math.min(10000, wsTimeout));
-    setConnectInterval(interval);
-  };
-
-  socket.onerror = (err) => {
-    console.error("Socket encountered error: ", err.message, "Closing socket");
-
-    socket.close();
-  };
+    socket.onerror = (err) => {
+      const { message } = err;
+      console.error(`Socket encountered error: ${message}, Closing socket.`);
+      socket.close();
+    };
+  }, [socket]);
 
   const value = {
-    socket,
+    socket: state.socket,
   };
 
   return (

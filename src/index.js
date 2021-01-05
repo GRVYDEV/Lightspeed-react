@@ -4,11 +4,14 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import SocketProvider from "./context/SocketContext";
+import RTCProvider from "./context/RTCPeerContext";
 
 ReactDOM.render(
   <React.StrictMode>
     <SocketProvider>
-      <App />
+      <RTCProvider>
+        <App />
+      </RTCProvider>
     </SocketProvider>
   </React.StrictMode>,
   document.getElementById("root")

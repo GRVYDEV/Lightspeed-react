@@ -1,9 +1,10 @@
 import "./App.css";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSocket } from "./context/SocketContext";
+import { useRTC } from "./context/RTCPeerContext";
 
 const App = () => {
-  const [pc] = useState(new RTCPeerConnection());
+  const { pc } = useRTC();
   const { socket } = useSocket();
 
   // const log = (msg) => {
