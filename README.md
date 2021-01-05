@@ -92,17 +92,20 @@ npm install
 <!-- USAGE EXAMPLES -->
 
 ## Usage
-First you need to configure the websocket url in `src/wsUrl.js`. If you are using an IP then it will be the public IP of your machine if you have DNS then it will be your hostname.
-
-You can host the static site locally using `serve`
-
+First build the frontend
 ```sh
 cd Lightspeed-react
 npm run build
+```
+
+You should then configure the websocket URL in `config.json` in the `build` directory.
+
+Now you can host the static site locally, by using `serve` for example
+```sh
 serve -s build -l 80
 ```
 
-This will serve the build folder on port 80 of your machine meaning it can be retrevied via a browser by either going to your machines public IP or hostname
+This will serve the build folder on port 80 of your machine meaning it can be retrieved via a browser by either going to your machines public IP or hostname
 
 <!-- _For more examples, please refer to the [Documentation](https://example.com)_ -->
 
