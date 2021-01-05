@@ -1,11 +1,17 @@
 import React, { createContext, useContext, useEffect, useReducer } from "react";
-import { url } from "../assets/constants";
 import PropTypes from "prop-types";
 
 export const SocketContext = createContext();
 
 const socketReducer = (state, action) => {
   switch (action.type) {
+    case "initSocket": {
+      return {
+        ...state,
+        socket: new WebSocket(action.url),
+        url: action.url,
+      };
+    }
     case "renewSocket": {
       let timeout = state.wsTimeoutDuration * 2;
       if (timeout > 10000) {
@@ -13,7 +19,7 @@ const socketReducer = (state, action) => {
       }
       return {
         ...state,
-        socket: new WebSocket(url),
+        socket: new WebSocket(state.url),
         wsTimeoutDuration: timeout,
       };
     }
@@ -34,7 +40,8 @@ const socketReducer = (state, action) => {
 };
 
 const initialState = {
-  socket: new WebSocket(url),
+  url: "",
+  socket: null,
   wsTimeoutDuration: 250,
   connectTimeout: null,
 };
@@ -45,6 +52,29 @@ const SocketProvider = ({ children }) => {
   const { socket, wsTimeoutDuration } = state;
 
   useEffect(() => {
+    // run once on first render
+    (async () => {
+      try {
+        const response = await fetch("config.json");
+        const data = await response.json();
+        console.log(data);
+        if (Object.prototype.hasOwnProperty.call(data, "wsUrl")) {
+          dispatch({
+            type: "initSocket",
+            url: data.wsUrl,
+          });
+        } else {
+          console.error("config.json is invalid");
+        }
+      } catch (e) {
+        console.error(e.message);
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (!socket) return;
+
     socket.onopen = () => {
       dispatch({ type: "resetTimeout" });
       dispatch({ type: "resetTimeoutDuration" });
