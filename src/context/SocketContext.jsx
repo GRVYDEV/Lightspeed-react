@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useReducer,
-  useState,
-} from "react";
+import React, { createContext, useContext, useEffect, useReducer } from "react";
 import { url } from "../assets/constants";
 import PropTypes from "prop-types";
 
@@ -17,18 +11,17 @@ const socketReducer = (state, action) => {
       if (timeout > 10000) {
         timeout = 10000;
       }
-      console.log("creating websocket");
       return {
         ...state,
         socket: new WebSocket(url),
         wsTimeoutDuration: timeout,
       };
     }
-    case "updateInterval": {
-      return { ...state, connectInterval: action.interval };
+    case "updateTimeout": {
+      return { ...state, connectTimeout: action.timeout };
     }
-    case "clearInterval": {
-      clearInterval(state.connectInterval);
+    case "clearTimeout": {
+      clearTimeout(state.connectTimeout);
       return { ...state };
     }
     case "resetTimeoutDuration": {
@@ -43,7 +36,7 @@ const socketReducer = (state, action) => {
 const initialState = {
   socket: new WebSocket(url),
   wsTimeoutDuration: 250,
-  connectInterval: null,
+  connectTimeout: null,
 };
 
 const SocketProvider = ({ children }) => {
@@ -53,6 +46,7 @@ const SocketProvider = ({ children }) => {
 
   useEffect(() => {
     socket.onopen = () => {
+      dispatch({ type: "resetTimeout" });
       dispatch({ type: "resetTimeoutDuration" });
       console.log("Connected to websocket");
     };
@@ -65,14 +59,17 @@ const SocketProvider = ({ children }) => {
         )} second. ${reason}`
       );
 
-      const interval = setTimeout(() => {
-        //check if websocket instance is closed, if so call `setupConnect` function.
+      const timeout = setTimeout(() => {
+        //check if websocket instance is closed, if so renew connection
         if (!socket || socket.readyState === WebSocket.CLOSED) {
           dispatch({ type: "renewSocket" });
         }
       }, wsTimeoutDuration);
 
-      dispatch({ type: "updateInterval", interval });
+      dispatch({
+        type: "updateTimeout",
+        timeout,
+      });
     };
 
     socket.onerror = (err) => {

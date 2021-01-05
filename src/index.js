@@ -7,13 +7,11 @@ import SocketProvider from "./context/SocketContext";
 import RTCProvider from "./context/RTCPeerContext";
 
 ReactDOM.render(
-  <React.StrictMode>
-    <SocketProvider>
-      <RTCProvider>
-        <App />
-      </RTCProvider>
-    </SocketProvider>
-  </React.StrictMode>,
+  <SocketProvider>
+    <RTCProvider>
+      <App />
+    </RTCProvider>
+  </SocketProvider>,
   document.getElementById("root")
 );
 
