@@ -57,7 +57,6 @@ const SocketProvider = ({ children }) => {
       try {
         const response = await fetch("config.json");
         const data = await response.json();
-        console.log(data);
         if (Object.prototype.hasOwnProperty.call(data, "wsUrl")) {
           dispatch({
             type: "initSocket",
