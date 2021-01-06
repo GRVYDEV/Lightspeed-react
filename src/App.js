@@ -1,109 +1,15 @@
-import logo from "./logo.svg";
 import "./App.css";
 import React from "react";
-import Plyr from "plyr";
+import { useSocket } from "./context/SocketContext";
+import { useRTC } from "./context/RTCPeerContext";
 
-class Main extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isLoaded: false,
-      error: null,
+const App = () => {
+  const { pc } = useRTC();
+  const { socket } = useSocket();
 
-      wsUrl: null,
-      ws: null,
-    };
-  }
-
-  componentDidMount() {
-    fetch("config.json")
-      .then(res => res.json())
-      .then(
-        (result) => {
-          if (result.hasOwnProperty("wsUrl")) {
-            this.setState({
-              wsUrl: result.wsUrl
-            });
-            this.connect();
-          } else {
-            this.setState({
-              isLoaded: true,
-              error: "config.json is invalid"
-            })
-          }
-        },
-        (error) => {
-          this.setState({
-            isLoaded: true,
-            error
-          });
-        });
-  }
-
-  timeout = 250;
-
-  connect = () => {
-    const {wsUrl} = this.state;
-    var ws = new WebSocket(wsUrl);
-    let that = this;
-    var connectInterval;
-
-    ws.onopen = () => {
-      console.log("Connected to websocket");
-
-      this.setState({ws: ws});
-
-      that.timeout = 250;
-
-      clearTimeout(connectInterval);
-    };
-
-    ws.onclose = (e) => {
-      console.log(
-        `Socket is closed. Reconnect will be attempted in ${Math.min(
-          10000 / 1000,
-          (that.timeout + that.timeout) / 1000
-        )} second.`,
-        e.reason
-      );
-
-      that.timeout = that.timeout + that.timeout;
-      connectInterval = setTimeout(this.check, Math.min(10000, that.timeout));
-    };
-
-    // websocket onerror event listener
-    ws.onerror = (err) => {
-      console.error(
-        "Socket encountered error: ",
-        err.message,
-        "Closing socket"
-      );
-
-      ws.close();
-    };
-  };
-
-  check = () => {
-    const {ws} = this.state;
-    if (!ws || ws.readyState == WebSocket.CLOSED) this.connect(); //check if websocket instance is closed, if so call `connect` function.
-  };
-
-  render() {
-    const {error} = this.state;
-    if (!error)
-      return <App websocket={this.state.ws}></App>;
-    else {
-      console.error(error)
-      return null;
-    }
-  }
-}
-
-function App(props) {
-  let pc = new RTCPeerConnection();
-  let log = (msg) => {
-    document.getElementById("div").innerHTML += msg + "<br>";
-  };
+  // const log = (msg) => {
+  //   document.getElementById("div").innerHTML += msg + "<br>";
+  // };
 
   pc.ontrack = function (event) {
     if (event.track.kind === "audio") {
@@ -124,53 +30,53 @@ function App(props) {
   // }
 
   // Offer to receive 1 audio, and 1 video tracks
-  pc.addTransceiver("audio", {direction: "recvonly"});
+  pc.addTransceiver("audio", { direction: "recvonly" });
   // pc.addTransceiver('video', { 'direction': 'recvonly' })
-  pc.addTransceiver("video", {direction: "recvonly"});
+  pc.addTransceiver("video", { direction: "recvonly" });
 
-  let ws = props.websocket;
   pc.onicecandidate = (e) => {
     if (!e.candidate) {
       console.log("Candidate fail");
       return;
     }
 
-    ws.send(
-      JSON.stringify({event: "candidate", data: JSON.stringify(e.candidate)})
+    socket.send(
+      JSON.stringify({ event: "candidate", data: JSON.stringify(e.candidate) })
     );
   };
 
-  if (ws) {
-    ws.onmessage = function (evt) {
+  if (socket) {
+    socket.onmessage = function (evt) {
       let msg = JSON.parse(evt.data);
       if (!msg) {
         return console.log("failed to parse msg");
       }
 
+      const offerCandidate = JSON.parse(msg.data);
       switch (msg.event) {
         case "offer":
           console.log("offer");
-          let offer = JSON.parse(msg.data);
-          if (!offer) {
+
+          if (!offerCandidate) {
             return console.log("failed to parse answer");
           }
-          pc.setRemoteDescription(offer);
+          pc.setRemoteDescription(offerCandidate);
           pc.createAnswer().then((answer) => {
             pc.setLocalDescription(answer);
-            ws.send(
-              JSON.stringify({event: "answer", data: JSON.stringify(answer)})
+            socket.send(
+              JSON.stringify({ event: "answer", data: JSON.stringify(answer) })
             );
           });
           return;
 
         case "candidate":
           console.log("candidate");
-          let candidate = JSON.parse(msg.data);
-          if (!candidate) {
+
+          if (!offerCandidate) {
             return console.log("failed to parse candidate");
           }
 
-          pc.addIceCandidate(candidate);
+          pc.addIceCandidate(offerCandidate);
       }
     };
   }
@@ -209,7 +115,7 @@ function App(props) {
                 <span className="alpha-tag">
                   <div>
                     {" "}
-                    <i class="fas fa-construction badge-icon"></i>Alpha
+                    <i className="fas fa-construction badge-icon"></i>Alpha
                   </div>
                 </span>
                 <h4 className="details-heading">
@@ -227,11 +133,11 @@ function App(props) {
           <div className="chat-main">
             <div className="chat-heading chat-pad">
               <h6>Live Chat Room</h6>
-              <i class="fas fa-long-arrow-up arrow"></i>
+              <i className="fas fa-long-arrow-up arrow"></i>
             </div>
 
             <div className="chat-body">
-              <i class="fas fa-construction"></i>
+              <i className="fas fa-construction"></i>
               <h4>Coming Soon!</h4>
             </div>
           </div>
@@ -239,6 +145,6 @@ function App(props) {
       </div>
     </div>
   );
-}
+};
 
-export default Main;
+export default App;
