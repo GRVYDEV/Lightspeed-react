@@ -2,6 +2,7 @@ import "./App.css";
 import React, { useEffect, useReducer } from "react";
 import { useSocket } from "./context/SocketContext";
 import { useRTC } from "./context/RTCPeerContext";
+import VideoPlayer from "./components/VideoPlayer";
 
 const appReducer = (state, action) => {
   switch (action.type) {
@@ -30,38 +31,26 @@ const App = () => {
 
   pc.ontrack = (event) => {
     const {
-      track: { kind, streams },
+      track: { kind },
+      streams,
     } = event;
 
-    //console.log(kind);
-    if (kind === "stream") {
+    if (kind === "video") {
       dispatch({ type: "initStream", stream: streams[0] });
     }
-
-    // console.log(event);
-    if (event.track.kind === "audio") {
-      return;
-    }
-
-    var el = document.getElementById("player");
-    el.srcObject = event.streams[0];
-    el.autoplay = true;
-    el.controls = true;
   };
 
   pc.onicecandidate = (e) => {
-    console.log(e);
-    if (!e.candidate) {
-      console.log("Candidate fail");
-      return;
+    const { candidate } = e;
+    if (candidate) {
+      console.log("Candidate success");
+      socket.send(
+        JSON.stringify({
+          event: "candidate",
+          data: JSON.stringify(e.candidate),
+        })
+      );
     }
-
-    socket.send(
-      JSON.stringify({
-        event: "candidate",
-        data: JSON.stringify(e.candidate),
-      })
-    );
   };
 
   if (socket) {
@@ -83,7 +72,6 @@ const App = () => {
       switch (msg.event) {
         case "offer":
           console.log("Offer");
-
           pc.setRemoteDescription(offerCandidate);
 
           try {
@@ -102,14 +90,12 @@ const App = () => {
           return;
         case "candidate":
           console.log("Candidate");
-          console.log(offerCandidate);
           pc.addIceCandidate(offerCandidate);
           return;
       }
     };
   }
 
-  console.log(state);
   return (
     <div className="App">
       <header className="App-header">
@@ -121,13 +107,7 @@ const App = () => {
       </header>
       <div className="container">
         <div className="video-container">
-          <video
-            id="player"
-            playsInline
-            controls
-            poster="/images/img.jpg"
-            src={state.stream}
-          ></video>
+          <VideoPlayer src={state.stream} />
           <div className="video-details">
             <div className="detail-heading-box">
               <div className="detail-title">
