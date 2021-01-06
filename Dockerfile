@@ -1,12 +1,7 @@
 # multistage - builder image
 FROM node:alpine AS builder
-WORKDIR /app
-
-RUN apk update && apk upgrade && \
-    apk add --no-cache bash git openssh
-
-RUN git clone https://github.com/GRVYDEV/Lightspeed-react.git
 WORKDIR /app/Lightspeed-react
+COPY . .
 RUN npm install
 
 # configure ip, hardcoded to webrtc container address (8080) for now
