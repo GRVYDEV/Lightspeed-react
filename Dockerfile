@@ -11,10 +11,5 @@ RUN sed -i "s|stream.gud.software|localhost|g" public/config.json
 RUN npm run build
 
 # runtime image
-FROM node:alpine
-WORKDIR /app/
-COPY --from=builder /app/Lightspeed-react/build ./build/
-RUN npm install -g serve
-# change port number if you want another port than 80
-EXPOSE 80
-CMD serve -s build -l 80
+FROM nginx:stable
+COPY --from=builder /app/Lightspeed-react/build /usr/share/nginx/html
