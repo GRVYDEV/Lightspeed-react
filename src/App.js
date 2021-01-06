@@ -1,97 +1,115 @@
 import "./App.css";
-import React from "react";
+import React, { useEffect, useReducer } from "react";
 import { useSocket } from "./context/SocketContext";
 import { useRTC } from "./context/RTCPeerContext";
 
+const appReducer = (state, action) => {
+  switch (action.type) {
+    case "initStream": {
+      return { ...state, stream: action.stream };
+    }
+    default: {
+      return { ...state };
+    }
+  }
+};
+
+const initialState = {
+  stream: null,
+};
+
 const App = () => {
+  const [state, dispatch] = useReducer(appReducer, initialState);
   const { pc } = useRTC();
   const { socket } = useSocket();
-
-  // const log = (msg) => {
-  //   document.getElementById("div").innerHTML += msg + "<br>";
-  // };
-
-  pc.ontrack = function (event) {
-    if (event.track.kind === "audio") {
-      return;
-    }
-    var el = document.getElementById("player");
-    el.srcObject = event.streams[0];
-    el.autoplay = true;
-    el.controls = true;
-  };
-
-  // pc.oniceconnectionstatechange = e => log(pc.iceConnectionState)
-  // pc.onicecandidate = event => {
-  //     if (event.candidate === null) {
-  //         console.log(pc.localDescription);
-  //         document.getElementById('localSessionDescription').value = btoa(JSON.stringify(pc.localDescription))
-  //     }
-  // }
 
   // Offer to receive 1 audio, and 1 video tracks
   pc.addTransceiver("audio", { direction: "recvonly" });
   // pc.addTransceiver('video', { 'direction': 'recvonly' })
   pc.addTransceiver("video", { direction: "recvonly" });
 
+  pc.ontrack = (event) => {
+    const {
+      track: { kind, streams },
+    } = event;
+
+    //console.log(kind);
+    if (kind === "stream") {
+      dispatch({ type: "initStream", stream: streams[0] });
+    }
+
+    // console.log(event);
+    if (event.track.kind === "audio") {
+      return;
+    }
+
+    var el = document.getElementById("player");
+    el.srcObject = event.streams[0];
+    el.autoplay = true;
+    el.controls = true;
+  };
+
   pc.onicecandidate = (e) => {
+    console.log(e);
     if (!e.candidate) {
       console.log("Candidate fail");
       return;
     }
 
     socket.send(
-      JSON.stringify({ event: "candidate", data: JSON.stringify(e.candidate) })
+      JSON.stringify({
+        event: "candidate",
+        data: JSON.stringify(e.candidate),
+      })
     );
   };
 
   if (socket) {
-    socket.onmessage = function (evt) {
-      let msg = JSON.parse(evt.data);
+    socket.onmessage = async (event) => {
+      const msg = JSON.parse(event.data);
+
       if (!msg) {
-        return console.log("failed to parse msg");
+        console.log("Failed to parse msg");
+        return;
       }
 
       const offerCandidate = JSON.parse(msg.data);
+
+      if (!offerCandidate) {
+        console.log("Failed to parse offer msg data");
+        return;
+      }
+
       switch (msg.event) {
         case "offer":
-          console.log("offer");
+          console.log("Offer");
 
-          if (!offerCandidate) {
-            return console.log("failed to parse answer");
-          }
           pc.setRemoteDescription(offerCandidate);
-          pc.createAnswer().then((answer) => {
+
+          try {
+            const answer = await pc.createAnswer();
             pc.setLocalDescription(answer);
             socket.send(
-              JSON.stringify({ event: "answer", data: JSON.stringify(answer) })
+              JSON.stringify({
+                event: "answer",
+                data: JSON.stringify(answer),
+              })
             );
-          });
-          return;
-
-        case "candidate":
-          console.log("candidate");
-
-          if (!offerCandidate) {
-            return console.log("failed to parse candidate");
+          } catch (e) {
+            console.error(e.message);
           }
 
+          return;
+        case "candidate":
+          console.log("Candidate");
+          console.log(offerCandidate);
           pc.addIceCandidate(offerCandidate);
+          return;
       }
     };
   }
 
-  // let sd = document.getElementById('remoteSessionDescription').value
-  // if (sd === '') {
-  //     return alert('Session Description must not be empty')
-  // }
-
-  // try {
-  //     pc.setRemoteDescription(new RTCSessionDescription(JSON.parse(atob(sd))))
-  // } catch (e) {
-  //     alert(e)
-  //
-
+  console.log(state);
   return (
     <div className="App">
       <header className="App-header">
@@ -108,6 +126,7 @@ const App = () => {
             playsInline
             controls
             poster="/images/img.jpg"
+            src={state.stream}
           ></video>
           <div className="video-details">
             <div className="detail-heading-box">
