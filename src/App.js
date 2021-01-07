@@ -3,6 +3,8 @@ import React, { useEffect, useReducer } from "react";
 import { useSocket } from "./context/SocketContext";
 import { useRTC } from "./context/RTCPeerContext";
 import VideoPlayer from "./components/VideoPlayer";
+import LiveChat from "./components/LiveChat";
+import Header from "./components/Header";
 
 const appReducer = (state, action) => {
   switch (action.type) {
@@ -98,13 +100,7 @@ const App = () => {
 
   return (
     <div className="App">
-      <header className="App-header">
-        <div className="logo-header">
-          <img id="logo-img" src="/images/lightspeedlogo.svg"></img>
-          <h1>Project Lightspeed</h1>
-        </div>
-        <div></div>
-      </header>
+      <Header></Header>
       <div className="container">
         <div className="video-container">
           <VideoPlayer src={state.stream} />
@@ -113,7 +109,6 @@ const App = () => {
               <div className="detail-title">
                 <span className="alpha-tag">
                   <div>
-                    {" "}
                     <i className="fas fa-construction badge-icon"></i>Alpha
                   </div>
                 </span>
@@ -127,20 +122,7 @@ const App = () => {
             </div>
           </div>
         </div>
-
-        <div className="chat-container">
-          <div className="chat-main">
-            <div className="chat-heading chat-pad">
-              <h6>Live Chat Room</h6>
-              <i className="fas fa-long-arrow-up arrow"></i>
-            </div>
-
-            <div className="chat-body">
-              <i className="fas fa-construction"></i>
-              <h4>Coming Soon!</h4>
-            </div>
-          </div>
-        </div>
+        <LiveChat></LiveChat>
       </div>
     </div>
   );
