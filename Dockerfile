@@ -1,8 +1,13 @@
+ARG ALPINE_VERSION=3.12
+ARG NODE_VERSION=15
+
 # multistage - builder image
-FROM node:alpine AS builder
+FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION} AS builder
 WORKDIR /app/Lightspeed-react
-COPY . .
+# Layer caching for node modules
+COPY package.json package-lock.json ./
 RUN npm install
+COPY . .
 
 # configure ip, hardcoded to webrtc container address (8080) for now
 RUN sed -i "s|stream.gud.software|localhost|g" public/config.json
@@ -11,5 +16,6 @@ RUN sed -i "s|stream.gud.software|localhost|g" public/config.json
 RUN npm run build
 
 # runtime image
-FROM nginx:stable
-COPY --from=builder /app/Lightspeed-react/build /usr/share/nginx/html
+FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION}
+USER 1000
+COPY --from=builder --chown=1000 /app/Lightspeed-react/build /usr/share/nginx/html
