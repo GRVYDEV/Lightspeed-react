@@ -5,6 +5,12 @@ import { useRTC } from "./context/RTCPeerContext";
 import VideoPlayer from "./components/VideoPlayer";
 import LiveChat from "./components/LiveChat";
 import Header from "./components/Header";
+import {
+  DetailHeadingBox,
+  VideoContainer,
+  VideoDetails,
+  MainContainer,
+} from "./styles/appStyles";
 
 const appReducer = (state, action) => {
   switch (action.type) {
@@ -99,13 +105,13 @@ const App = () => {
   }
 
   return (
-    <div className="App">
+    <>
       <Header></Header>
-      <div className="container">
-        <div className="video-container">
+      <MainContainer>
+        <VideoContainer>
           <VideoPlayer src={state.stream} />
-          <div className="video-details">
-            <div className="detail-heading-box">
+          <VideoDetails>
+            <DetailHeadingBox>
               <div className="detail-title">
                 <span className="alpha-tag">
                   <div>
@@ -117,14 +123,13 @@ const App = () => {
                   entertainment
                 </h4>
               </div>
-
               <img id="detail-img" src="/images/lightspeedlogo.svg"></img>
-            </div>
-          </div>
-        </div>
+            </DetailHeadingBox>
+          </VideoDetails>
+        </VideoContainer>
         <LiveChat></LiveChat>
-      </div>
-    </div>
+      </MainContainer>
+    </>
   );
 };
 

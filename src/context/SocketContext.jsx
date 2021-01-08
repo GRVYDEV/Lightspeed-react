@@ -101,9 +101,9 @@ const SocketProvider = ({ children }) => {
       });
     };
 
-    socket.onerror = (err) => {
-      const { message } = err;
-      console.error(`Socket encountered error: ${message}, Closing socket.`);
+    // err argument does not have any useful information about the error
+    socket.onerror = () => {
+      console.error(`Socket encountered error. Closing socket.`);
       socket.close();
     };
   }, [socket]);

@@ -1,14 +1,15 @@
 import React from "react";
+import { HeaderLogoContainer, MainHeader } from "../styles/headerStyles";
+import { LightspeedLogoURL } from "../assets/constants";
 
 const Header = () => {
   return (
-    <header className="App-header">
-      <div className="logo-header">
-        <img id="logo-img" src="/images/lightspeedlogo.svg"></img>
+    <MainHeader>
+      <HeaderLogoContainer>
+        <img src={LightspeedLogoURL} alt="Lightspeed logo"></img>
         <h1>Project Lightspeed</h1>
-      </div>
-      <div></div>
-    </header>
+      </HeaderLogoContainer>
+    </MainHeader>
   );
 };
 
