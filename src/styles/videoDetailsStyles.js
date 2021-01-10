@@ -4,8 +4,8 @@ export const VideoDetailsContainer = styled.div`
   width: 100%;
   background-color: #242731;
   text-align: left;
-  padding-top: 4rem;
-  margin-top: -3rem;
+  padding-top: 4em;
+  margin-top: -3em;
   border-radius: 32px;
 `;
 
