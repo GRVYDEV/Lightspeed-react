@@ -17,7 +17,7 @@ export const HeaderLogoContainer = styled.div`
 
   h1 {
     font-weight: 600;
-    font-size: 56px;
+    font-size: 2em;
     color: white;
   }
 

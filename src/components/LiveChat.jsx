@@ -1,20 +1,26 @@
 import React from "react";
+import {
+  ChatContainer,
+  ChatMain,
+  ChatHeading,
+  ChatBody,
+} from "../styles/liveChatStyles";
 
 const LiveChat = () => {
   return (
-    <div className="chat-container">
-      <div className="chat-main">
-        <div className="chat-heading chat-pad">
+    <ChatContainer>
+      <ChatMain>
+        <ChatHeading>
           <h6>Live Chat Room</h6>
           <i className="fas fa-long-arrow-up arrow"></i>
-        </div>
+        </ChatHeading>
 
-        <div className="chat-body">
-          <i className="fas fa-construction"></i>
+        <ChatBody>
+          <i className="fas fa-construction fa-3x"></i>
           <h4>Coming Soon!</h4>
-        </div>
-      </div>
-    </div>
+        </ChatBody>
+      </ChatMain>
+    </ChatContainer>
   );
 };
 

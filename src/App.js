@@ -3,14 +3,10 @@ import React, { useEffect, useReducer } from "react";
 import { useSocket } from "./context/SocketContext";
 import { useRTC } from "./context/RTCPeerContext";
 import VideoPlayer from "./components/VideoPlayer";
+import VideoDetails from "./components/VideoDetails";
 import LiveChat from "./components/LiveChat";
 import Header from "./components/Header";
-import {
-  DetailHeadingBox,
-  VideoContainer,
-  VideoDetails,
-  MainContainer,
-} from "./styles/appStyles";
+import { VideoContainer, MainContainer } from "./styles/appStyles";
 
 const appReducer = (state, action) => {
   switch (action.type) {
@@ -110,22 +106,7 @@ const App = () => {
       <MainContainer>
         <VideoContainer>
           <VideoPlayer src={state.stream} />
-          <VideoDetails>
-            <DetailHeadingBox>
-              <div className="detail-title">
-                <span className="alpha-tag">
-                  <div>
-                    <i className="fas fa-construction badge-icon"></i>Alpha
-                  </div>
-                </span>
-                <h4 className="details-heading">
-                  Welcome to Project Lightspeed - The future of live
-                  entertainment
-                </h4>
-              </div>
-              <img id="detail-img" src="/images/lightspeedlogo.svg"></img>
-            </DetailHeadingBox>
-          </VideoDetails>
+          <VideoDetails />
         </VideoContainer>
         <LiveChat></LiveChat>
       </MainContainer>
