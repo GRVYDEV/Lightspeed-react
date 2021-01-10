@@ -20,7 +20,7 @@
     <!-- <a href="https://github.com/GRVYDEV/Lightspeed-react"><strong>Explore the docs »</strong></a> -->
     <br />
     <br />
-    <a href="https://github.com/GRVYDEV/Lightspeed-react">View Demo</a>
+    <a href="https://youtu.be/Dzin4_A8RDs">View Demo</a>
     ·
     <a href="https://github.com/GRVYDEV/Lightspeed-react/issues">Report Bug</a>
     ·
