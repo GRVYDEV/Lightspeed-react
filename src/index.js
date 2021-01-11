@@ -5,13 +5,17 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import SocketProvider from "./context/SocketContext";
 import RTCProvider from "./context/RTCPeerContext";
+import GlobalStyle from "./styles/globalStyles";
 
 ReactDOM.render(
-  <SocketProvider>
-    <RTCProvider>
-      <App />
-    </RTCProvider>
-  </SocketProvider>,
+  <>
+    <GlobalStyle />
+    <SocketProvider>
+      <RTCProvider>
+        <App />
+      </RTCProvider>
+    </SocketProvider>
+  </>,
   document.getElementById("root")
 );
 
