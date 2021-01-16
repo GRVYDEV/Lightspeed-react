@@ -13,6 +13,10 @@ const appReducer = (state, action) => {
     case "initStream": {
       return { ...state, stream: action.stream };
     }
+    case "info": {
+      return { ...state, viewers: action.viewers };
+    }
+
     default: {
       return { ...state };
     }
@@ -21,6 +25,7 @@ const appReducer = (state, action) => {
 
 const initialState = {
   stream: null,
+  viewers: null,
 };
 
 const App = () => {
@@ -96,6 +101,11 @@ const App = () => {
           console.log("Candidate");
           pc.addIceCandidate(offerCandidate);
           return;
+        case "info":
+          dispatch({
+            type: "info",
+            viewers: JSON.parse(msg.data).no_connections,
+          });
       }
     };
   }
@@ -106,7 +116,7 @@ const App = () => {
       <MainContainer>
         <VideoContainer>
           <VideoPlayer src={state.stream} />
-          <VideoDetails />
+          <VideoDetails viewers={state.viewers} />
         </VideoContainer>
         <LiveChat></LiveChat>
       </MainContainer>

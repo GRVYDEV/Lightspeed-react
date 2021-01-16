@@ -6,7 +6,7 @@ export const ChatContainer = styled.div`
   position: relative;
   color: #fff;
   margin: 0 2.5em;
-  min-width: 20em;
+  min-width: 25em;
 
   @media only screen and (max-width: 1024px) {
     margin: 1em 0.3em;
