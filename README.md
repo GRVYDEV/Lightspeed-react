@@ -75,13 +75,36 @@ This is one of three components required for Project Lightspeed. Project Lightsp
 
 ## Getting Started
 
+## Setup
+
+### Docker
+
+1. Install [git](https://git-scm.com/downloads)
+1. Build the image from the master branch with:
+
+    ```sh
+    docker build -t grvydev/lightspeed-react https://github.com/GRVYDEV/Lightspeed-react.git
+    ```
+
+1. Run it with
+
+    ```sh
+    docker run -it --rm \
+      -p 8000:80/tcp -p 8080:8080/tcp \
+      -e WEBSOCKET_HOST=localhost -e WEBSOCKET_PORT=8080 grvydev/lightspeed-react
+    ```
+
+1. You can now access it at [localhost:8000](http://localhost:8000) and the websocket port is published on port `8080`.
+
+### Locally
+
 To get a local copy up and running follow these simple steps.
 
-### Prerequisites
+#### Prerequisites
 
 In order to run this npm is required. Installation instructions can be found <a href="https://www.rust-lang.org/tools/https://www.npmjs.com/get-npm">here</a>. Npm Serve is required as well if you want to host this on your machine. That can be found <a href="https://www.npmjs.com/package/serve">here</a>
 
-### Installation
+#### Installation
 
 ```sh
 git clone https://github.com/GRVYDEV/Lightspeed-react.git
@@ -91,8 +114,10 @@ npm install
 
 <!-- USAGE EXAMPLES -->
 
-## Usage
+#### Usage
+
 First build the frontend
+
 ```sh
 cd Lightspeed-react
 npm run build
@@ -101,6 +126,7 @@ npm run build
 You should then configure the websocket URL in `config.json` in the `build` directory.
 
 Now you can host the static site locally, by using `serve` for example
+
 ```sh
 serve -s build -l 80
 ```
