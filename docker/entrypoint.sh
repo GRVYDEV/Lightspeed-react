@@ -1,5 +1,3 @@
 #!/bin/sh
 
-publicDir=/usr/share/nginx/html
-
-envsubst < /config.json.template > "$publicDir/config.json"
+envsubst < /config.json.template > "/usr/share/nginx/html/config.json"
