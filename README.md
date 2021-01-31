@@ -91,12 +91,12 @@ This is one of three components required for Project Lightspeed. Project Lightsp
     ```sh
     docker run -it --rm \
       -p 8000:80/tcp \
-      -e WEBSOCKET_HOST=localhost \
+      -e WEBSOCKET_HOST=lightspeed-websocket-hostname \
       -e WEBSOCKET_PORT=8080 \
       grvydev/lightspeed-react
     ```
 
-1. You can now access it at [localhost:8000](http://localhost:8000) and the websocket port is published on port `8080`.
+1. You can now access it at [localhost:8000](http://localhost:8000).
 
 ### Locally
 
