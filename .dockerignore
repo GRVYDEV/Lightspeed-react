@@ -1,3 +1,6 @@
+.git
+.dockerignore
+.gitignore
 Dockerfile
 README.md
 LICENSE
