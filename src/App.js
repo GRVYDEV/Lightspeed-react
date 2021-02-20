@@ -64,7 +64,7 @@ const App = () => {
 
   if (socket) {
     socket.onmessage = async (event) => {
-      const msg = event.data;
+      const msg = JSON.parse(event.data);
 
       if (!msg) {
         console.log("Failed to parse msg");
