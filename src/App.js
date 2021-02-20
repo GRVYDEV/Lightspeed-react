@@ -56,7 +56,7 @@ const App = () => {
       socket.send(
         JSON.stringify({
           event: "candidate",
-          data: JSON.stringify(e.candidate),
+          data: e.candidate,
         })
       );
     }
@@ -64,14 +64,14 @@ const App = () => {
 
   if (socket) {
     socket.onmessage = async (event) => {
-      const msg = JSON.parse(event.data);
+      const msg = event.data;
 
       if (!msg) {
         console.log("Failed to parse msg");
         return;
       }
 
-      const offerCandidate = JSON.parse(msg.data);
+      const offerCandidate = msg.data;
 
       if (!offerCandidate) {
         console.log("Failed to parse offer msg data");
@@ -89,7 +89,7 @@ const App = () => {
             socket.send(
               JSON.stringify({
                 event: "answer",
-                data: JSON.stringify(answer),
+                data: answer,
               })
             );
           } catch (e) {
@@ -104,7 +104,7 @@ const App = () => {
         case "info":
           dispatch({
             type: "info",
-            viewers: JSON.parse(msg.data).no_connections,
+            viewers: msg.data.no_connections,
           });
       }
     };
