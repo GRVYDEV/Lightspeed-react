@@ -41,9 +41,11 @@ const App = () => {
   pc.ontrack = (event) => {
     const {
       track: { kind },
+      receiver,
       streams,
     } = event;
 
+    receiver.playoutDelayHint = 1;
     if (kind === "video") {
       dispatch({ type: "initStream", stream: streams[0] });
     }
