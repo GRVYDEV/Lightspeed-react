@@ -3,7 +3,7 @@
     <img src="images/lightspeedlogo.svg" alt="Logo" width="150" height="150">
 </a>
 </p>
-  <h1 align="center">Project Lightspeed React</h1>
+  <h1 align="center">Project Lightspeed React [Deprecated]</h1>
 <div align="center">
   <a href="https://github.com/GRVYDEV/Lightspeed-react/stargazers"><img src="https://img.shields.io/github/stars/GRVYDEV/Lightspeed-react" alt="Stars Badge"/></a>
 <a href="https://github.com/GRVYDEV/Lightspeed-react/network/members"><img src="https://img.shields.io/github/forks/GRVYDEV/Lightspeed-react" alt="Forks Badge"/></a>
@@ -15,6 +15,7 @@
 <br />
 <p align="center">
   <p align="center">
+	NOTE: This repo has been deprecated in favor of a monorepo configuration. Please <a href="https://github.com/GRVYDEV/Project-Lightspeed">see</a><br>
     A React website that connects to Lightspeed WebRTC via a websocket to negotiate SDPs and display a WebRTC stream.
     <!-- <br /> -->
     <!-- <a href="https://github.com/GRVYDEV/Lightspeed-react"><strong>Explore the docs »</strong></a> -->
